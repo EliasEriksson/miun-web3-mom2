@@ -2,6 +2,9 @@ const {src, dest, watch, series, parallel} = require("gulp");
 const browserSync = require('browser-sync').create();
 const concat = require("gulp-concat");
 const terser = require('gulp-terser');
+const imagemin = require("gulp-imagemin");
+const resize = require("gulp-image-resize");
+const webp = require('gulp-webp');
 
 const srcRoot = "./src";
 const srcPaths = {
@@ -26,8 +29,13 @@ const copyHTML = () => {
 const copyCSS = () => {
     return src(
         srcPaths.css
-    ).pipe(concat("all.css")
-    ).pipe(dest(destPaths.css));
+    ).pipe(
+        concat("all.css")
+    ).pipe(
+        dest(destPaths.css)
+    ).pipe(
+        browserSync.stream()
+    );
 };
 
 const copyJS = () => {
@@ -39,12 +47,23 @@ const copyJS = () => {
         terser()
     ).pipe(
         dest(destPaths.js)
-    );
+    ).pipe(browserSync.stream());
 };
 
 const copyMedia = () => {
     return src(
         srcPaths.media
+    ).pipe(
+        imagemin()
+    ).pipe(
+        resize({
+            width: 200,
+            height: 200,
+            crop: true,
+            upscale: false
+        })
+    ).pipe(
+        webp()
     ).pipe(dest(destPaths.media));
 };
 
