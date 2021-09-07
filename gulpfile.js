@@ -3,9 +3,10 @@ const browserSync = require('browser-sync').create();
 const concat = require("gulp-concat");
 const terser = require('gulp-terser');
 const imagemin = require("gulp-imagemin");
-const resize = require("gulp-image-resize");
+let resizer = require('gulp-images-resizer');
 const webp = require('gulp-webp');
 
+// file paths to all the source files
 const srcRoot = "./src";
 const srcPaths = {
     html: `${srcRoot}/**/*.html`,
@@ -14,6 +15,7 @@ const srcPaths = {
     media: `${srcRoot}/media/**`
 };
 
+// paths to all the dest files
 const destRoot = "./public";
 const destPaths = {
     html: `${destRoot}`,
@@ -22,10 +24,16 @@ const destPaths = {
     media: `${destRoot}/media`
 };
 
+/**
+ * moves all the html files to the dest folder
+ */
 const copyHTML = () => {
     return src(srcPaths.html).pipe(dest(destPaths.html));
 };
 
+/**
+ * concatenates all the CSS files and moves the mega file to the css dest folder
+ */
 const copyCSS = () => {
     return src(
         srcPaths.css
@@ -38,6 +46,10 @@ const copyCSS = () => {
     );
 };
 
+/**
+ * concatenates and minifies all the JS files and moves the to the dest folder and
+ * updates the browser.
+ */
 const copyJS = () => {
     return src(
         srcPaths.js
@@ -50,23 +62,33 @@ const copyJS = () => {
     ).pipe(browserSync.stream());
 };
 
+/**
+ * resizes the images and compresses the images.
+ *
+ * after the first compression is done the files are moved to dest.
+ * after gulp continues to work and converts the files to webp creates
+ * webp files as well
+ */
 const copyMedia = () => {
     return src(
         srcPaths.media
     ).pipe(
-        imagemin()
-    ).pipe(
-        resize({
+        resizer({
             width: 200,
             height: 200,
-            crop: true,
-            upscale: false
         })
+    ).pipe(
+        imagemin()
+    ).pipe(
+        dest(destPaths.media)
     ).pipe(
         webp()
     ).pipe(dest(destPaths.media));
 };
 
+/**
+ * initialises the browserSync and starts all the watchers
+ */
 const serve = () => {
     browserSync.init({
         server: "./public"
@@ -79,6 +101,8 @@ const serve = () => {
     watch(srcPaths.media, copyMedia).on("change", browserSync.reload);
 };
 
+// runs a series of all copy tasks and then start watching
+// the copy tasks runs in parallel since they are not dependant on each other
 exports.default = series(
     parallel(copyHTML, copyCSS, copyJS, copyMedia),
     serve
