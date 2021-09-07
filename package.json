@@ -1,0 +1,26 @@
+{
+  "name": "miun-web3-mom2",
+  "version": "1.0.0",
+  "description": "webbutveckling 3- moment 2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EliasEriksson/miun-web3-mom2.git"
+  },
+  "author": "ELias Eriksson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EliasEriksson/miun-web3-mom2/issues"
+  },
+  "homepage": "https://github.com/EliasEriksson/miun-web3-mom2#readme",
+  "devDependencies": {
+    "browser-sync": "^2.27.5",
+    "gulp": "^4.0.2",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-terser": "^2.0.1"
+  }
+}
