@@ -1,9 +1,18 @@
 /**
  * xRender from https://github.com/EliasEriksson/xRender/blob/main/static/js/xRender.js
  *
- * @param template
- * @param context
- * @returns {ChildNode|null}
+ * Copied docs:
+ * renders a htmlTemplate to HTML
+ *
+ * all keys in the object are used to replace the {{ variables }} in the template.
+ * if a variable is found its replaced with the value for the key in context.
+ *
+ * if there are still {{ variables }} left in the template after the replacement
+ * is done null is returned instead.
+ *
+ * @param template a HTML file with {{ variables }}
+ * @param context originally a JSON object. Must have keys matching each {{ variable }} in the template
+ * @returns ChildNode
  */
 export function render(template, context) {
     for (let variable in context) {
